@@ -15,6 +15,7 @@ const badgeColors: Record<string, string> = {
 	startup: "bg-blue-500 border-blue-600",
 	performance: "bg-green-500 border-green-600",
 	network: "bg-violet-500 border-violet-600",
+	visual: "bg-amber-500 border-amber-600",
 };
 
 export default function Option({ Icon, label, description, badges, children }: optionProps) {
@@ -22,7 +23,7 @@ export default function Option({ Icon, label, description, badges, children }: o
 		<div className="flex max-w-none flex-col gap-4 p-6 overflow-hidden prose border rounded-md shadow-md bg-card">
 			<section className="flex items-center gap-1">
 				<Icon className="text-primary shrink-0" />
-				<h3>{label}</h3>
+				<h3 className="leading-none!">{label}</h3>
 
 				<section className="ml-auto">{children}</section>
 			</section>

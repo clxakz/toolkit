@@ -8,6 +8,7 @@ import { type ConfigSchema } from "@/shared/types";
 import { handleStartup } from "./extra/startup";
 import { autoUpdater, UpdateDownloadedEvent } from "electron-updater";
 import log from "electron-log";
+import { toggleClassicContextMenu } from "./extra/utils";
 
 process.on("uncaughtException", (error) => {
 	log.error("Uncaught Exception:", error);
@@ -69,22 +70,36 @@ export let config: Store<ConfigSchema> | null = null;
 app.whenReady().then(() => {
 	app.setAppUserModelId("com.clxakz.toolkit");
 
+	handleConfig();
+	handleIPC();
+	startTray();
+	handleStartup();
+	handleUpdate();
+});
+
+const handleConfig = (): void => {
 	config = new Store({
 		defaults: {
 			launchOnStartup: false,
 			firstStart: true,
 			startupActions: [""],
+			classicContextMenu: false,
 		},
 	});
 
 	config.onDidAnyChange((newval, oldval) => {
 		// console.log("Config changed:", { oldval, newval });
+		if (!newval || !oldval) return;
 
-		if (newval?.launchOnStartup !== oldval?.launchOnStartup) {
+		if (newval.launchOnStartup !== oldval.launchOnStartup) {
 			app.setLoginItemSettings({
 				openAtLogin: newval?.launchOnStartup,
 				path: process.execPath,
 			});
+		}
+
+		if (newval.classicContextMenu !== oldval.classicContextMenu) {
+			toggleClassicContextMenu(newval.classicContextMenu).catch((err) => dialog.showErrorBox("Failed to toggle classic context menu", err));
 		}
 	});
 
@@ -92,11 +107,9 @@ app.whenReady().then(() => {
 		createWindow();
 		config.set("firstStart", false);
 	}
+};
 
-	handleIPC();
-	startTray();
-	handleStartup();
-
+const handleUpdate = (): void => {
 	autoUpdater.checkForUpdates();
 
 	autoUpdater.on("update-available", () => {
@@ -124,4 +137,4 @@ app.whenReady().then(() => {
 	autoUpdater.on("error", (err) => {
 		log.error("Update error:", err);
 	});
-});
+};

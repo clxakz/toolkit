@@ -74,3 +74,40 @@ export const flushDNS = (): Promise<void> => {
 		});
 	});
 };
+
+export const toggleClassicContextMenu = (enable: boolean): Promise<void> => {
+	const key = "HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32";
+
+	return new Promise<void>((resolve, reject) => {
+		if (enable) {
+			exec(`reg add "${key}" /f`, async (err) => {
+				if (err) return reject(`Failed to create key: ${err}`);
+				try {
+					await restartExplorer();
+					resolve();
+				} catch (e) {
+					reject(`Failed to restart Explorer: ${e}`);
+				}
+			});
+		} else {
+			exec(`reg delete "${key}" /f`, async (err) => {
+				if (err) return reject(`Failed to delete key: ${err}`);
+				try {
+					await restartExplorer();
+					resolve();
+				} catch (e) {
+					reject(`Failed to restart Explorer: ${e}`);
+				}
+			});
+		}
+	});
+};
+
+const restartExplorer = (): Promise<void> => {
+	return new Promise((resolve, reject) => {
+		exec("taskkill /f /im explorer.exe && start explorer.exe", (err) => {
+			if (err) reject(err);
+			else resolve();
+		});
+	});
+};

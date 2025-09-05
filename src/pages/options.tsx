@@ -1,10 +1,10 @@
 import Option from "@/components/option";
 import { Switch } from "@/components/ui/switch";
 import { useConfig } from "@/hooks/useConfig";
-import { HardDrive, Network } from "lucide-react";
+import { HardDrive, MonitorCog, Network } from "lucide-react";
 
 export default function Options() {
-	const { config, toggleStartupOption } = useConfig();
+	const { config, toggleStartupOption, setOption } = useConfig();
 
 	return (
 		<div className="flex h-fit">
@@ -25,6 +25,15 @@ export default function Options() {
 					badges={["startup", "network"]}
 				>
 					<Switch checked={config?.startupActions.includes("flushDns")} onCheckedChange={() => toggleStartupOption("flushDns")} />
+				</Option>
+
+				<Option
+					Icon={MonitorCog}
+					label="Classic Context Menu"
+					description="Enables the classic windows 10 right click menu on windows 11."
+					badges={["visual"]}
+				>
+					<Switch checked={config?.classicContextMenu} onCheckedChange={(checked) => setOption("classicContextMenu", checked)} />
 				</Option>
 			</section>
 		</div>

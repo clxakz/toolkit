@@ -10,7 +10,6 @@ export const handleIPC = (): void => {
 
 	ipcMain.on("save-config", (_event, _config: ConfigSchema): void => {
 		if (!config) throw new Error("couldn't save config");
-		config?.clear();
 		config?.set(_config);
 	});
 };
