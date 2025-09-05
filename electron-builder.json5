@@ -4,6 +4,13 @@
 	appId: "com.clxakz.toolkit",
 	asar: true,
 	productName: "Toolkit",
+	publish: [
+		{
+			provider: "github",
+			owner: "clxakz",
+			repo: "toolkit",
+		},
+	],
 	directories: {
 		output: "release/${version}",
 	},
@@ -23,9 +30,9 @@
 		artifactName: "${productName}-Windows-${version}-Setup.${ext}",
 	},
 	nsis: {
-		oneClick: false,
-		perMachine: true,
-		allowToChangeInstallationDirectory: true,
+		oneClick: true,
+		perMachine: false,
+		allowToChangeInstallationDirectory: false,
 		deleteAppDataOnUninstall: false,
 	},
 	linux: {

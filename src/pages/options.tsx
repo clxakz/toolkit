@@ -20,9 +20,9 @@ export default function Options() {
 
 				<Option
 					Icon={Network}
-					label="Flush DNS Cahce"
+					label="Flush DNS Cache"
 					description="Automatically clears the system DNS cache to ensure the latest domain information is used, helping fix website loading issues or connectivity errors."
-					badges={["startup", "performance"]}
+					badges={["startup", "network"]}
 				>
 					<Switch checked={config?.startupActions.includes("flushDns")} onCheckedChange={() => toggleStartupOption("flushDns")} />
 				</Option>

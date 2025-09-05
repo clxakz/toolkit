@@ -14,6 +14,7 @@ type optionProps = {
 const badgeColors: Record<string, string> = {
 	startup: "bg-blue-500 border-blue-600",
 	performance: "bg-green-500 border-green-600",
+	network: "bg-violet-500 border-violet-600",
 };
 
 export default function Option({ Icon, label, description, badges, children }: optionProps) {
@@ -30,7 +31,7 @@ export default function Option({ Icon, label, description, badges, children }: o
 
 			<section className="flex flex-wrap gap-1 mt-auto">
 				{badges.map((badge, index) => (
-					<Badge key={index} className={cn("text-white", badgeColors[badge])}>
+					<Badge key={index} className={cn("text-white border-2", badgeColors[badge])}>
 						{badge}
 					</Badge>
 				))}

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage } from "electron";
+import { app, BrowserWindow, dialog, MessageBoxOptions, nativeImage } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { handleIPC } from "./api/api";
@@ -6,11 +6,26 @@ import { startTray } from "./extra/tray";
 import Store from "electron-store";
 import { type ConfigSchema } from "@/shared/types";
 import { handleStartup } from "./extra/startup";
+import { autoUpdater, UpdateDownloadedEvent } from "electron-updater";
+import log from "electron-log";
+
+process.on("uncaughtException", (error) => {
+	log.error("Uncaught Exception:", error);
+});
+
+process.on("unhandledRejection", (reason) => {
+	log.error("Unhandled Rejection:", reason);
+});
+
+log.transports.file.level = "info";
+autoUpdater.logger = log;
+autoUpdater.autoDownload = true;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, "..");
 
+const isDev = !app.isPackaged;
 export const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
@@ -24,7 +39,7 @@ export const createWindow = (): void => {
 	win = new BrowserWindow({
 		icon: appIcon,
 		title: "Toolkit",
-		alwaysOnTop: true,
+		alwaysOnTop: isDev,
 		skipTaskbar: true,
 		maximizable: false,
 		minimizable: false,
@@ -81,4 +96,32 @@ app.whenReady().then(() => {
 	handleIPC();
 	startTray();
 	handleStartup();
+
+	autoUpdater.checkForUpdates();
+
+	autoUpdater.on("update-available", () => {
+		log.info("Update available, downloading in background...");
+	});
+
+	autoUpdater.on("update-downloaded", (info: UpdateDownloadedEvent) => {
+		const releaseName = info.releaseName;
+
+		const dialogOpts: MessageBoxOptions = {
+			type: "info",
+			buttons: ["Install and Restart", "Later"],
+			title: "Update Ready",
+			message: "A new version has been downloaded.",
+			detail: `Version ${releaseName} is ready to install. Do you want to restart now?`,
+		};
+
+		dialog.showMessageBox(dialogOpts).then((returnValue) => {
+			if (returnValue.response === 0) {
+				autoUpdater.quitAndInstall();
+			}
+		});
+	});
+
+	autoUpdater.on("error", (err) => {
+		log.error("Update error:", err);
+	});
 });
