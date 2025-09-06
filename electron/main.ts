@@ -84,12 +84,8 @@ const handleConfig = (): void => {
 			firstStart: true,
 			startupActions: [""],
 			classicContextMenu: false,
+			notifications: true,
 		},
-	});
-
-	app.setLoginItemSettings({
-		openAtLogin: config.store.launchOnStartup,
-		path: process.execPath,
 	});
 
 	config.onDidAnyChange((newval, oldval) => {
@@ -109,6 +105,11 @@ const handleConfig = (): void => {
 	});
 
 	if (config.store.firstStart) {
+		app.setLoginItemSettings({
+			openAtLogin: true,
+			path: process.execPath,
+		});
+
 		createWindow();
 		config.set("firstStart", false);
 	}

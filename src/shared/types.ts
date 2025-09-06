@@ -3,4 +3,5 @@ export type ConfigSchema = {
 	firstStart: boolean;
 	startupActions: string[];
 	classicContextMenu: boolean;
+	notifications: boolean;
 };

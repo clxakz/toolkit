@@ -1,13 +1,15 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useConfig } from "./hooks/useConfig";
-import { Loader, Wrench } from "lucide-react";
-import { Label } from "./components/ui/label";
-import { Switch } from "./components/ui/switch";
+import { Cog, Loader, Wrench } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 const Options = lazy(() => import("./pages/options"));
+const Settings = lazy(() => import("./pages/settings"));
 
 export default function Layout() {
-	const { config, setConfig, setOption } = useConfig();
+	const { config, setConfig } = useConfig();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (config) return;
@@ -31,19 +33,20 @@ export default function Layout() {
 					<p className="leading-none!">Set and forget</p>
 				</article>
 
-				<section className="flex items-center ml-auto gap-2">
-					<Label className="text-primary" htmlFor="launchAtStartup">
-						Launch at system startup
-					</Label>
-					<Switch
-						id="launchAtStartup"
-						checked={config?.launchOnStartup}
-						onCheckedChange={(checked) => setOption("launchOnStartup", checked)}
-					/>
+				<section className="flex items-center ml-auto gap-2 text-primary">
+					<ToggleGroup type="single" className="border" defaultValue="options">
+						<ToggleGroupItem onClick={() => navigate("/")} value="options">
+							<Wrench />
+						</ToggleGroupItem>
+
+						<ToggleGroupItem onClick={() => navigate("/settings")} value="settings">
+							<Cog />
+						</ToggleGroupItem>
+					</ToggleGroup>
 				</section>
 			</nav>
 
-			<main className="flex flex-1 p-2 overflow-auto">
+			<main className="flex flex-1 p-2 overflow-auto overflow-x-hidden">
 				<Suspense
 					fallback={
 						<div className="flex items-center justify-center flex-1">
@@ -51,7 +54,10 @@ export default function Layout() {
 						</div>
 					}
 				>
-					<Options />
+					<Routes>
+						<Route path="/" element={<Options />} />
+						<Route path="/settings" element={<Settings />} />
+					</Routes>
 				</Suspense>
 			</main>
 		</div>

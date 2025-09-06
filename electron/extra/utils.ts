@@ -2,6 +2,7 @@ import { app, Notification } from "electron";
 import path from "node:path";
 import fs from "fs";
 import { exec } from "node:child_process";
+import { config } from "../main";
 
 let totalDeletedBytes = 0;
 export const deleteTempFiles = (): Promise<void> => {
@@ -21,10 +22,13 @@ export const deleteTempFiles = (): Promise<void> => {
 			});
 
 			const totalMB = (totalDeletedBytes / (1024 * 1024)).toFixed(2);
-			new Notification({
-				title: "Temp Cleaner",
-				body: `Deleted ${totalMB} MB from temp folders`,
-			}).show();
+
+			if (config?.store.notifications) {
+				new Notification({
+					title: "Temp Cleaner",
+					body: `Deleted ${totalMB} MB from temp folders`,
+				}).show();
+			}
 
 			resolve();
 		} catch (error: any) {
