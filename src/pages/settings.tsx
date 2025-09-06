@@ -23,8 +23,8 @@ export default function Settings() {
 			</section>
 
 			<section className="flex items-center justify-between bg-card p-4 rounded-md shadow-sm">
-				<Label htmlFor="launchAtStartup">Display Notifications</Label>
-				<Switch id="launchAtStartup" checked={config?.notifications} onCheckedChange={(checked) => setOption("notifications", checked)} />
+				<Label htmlFor="notifications">Display Notifications</Label>
+				<Switch id="notifications" checked={config?.notifications} onCheckedChange={(checked) => setOption("notifications", checked)} />
 			</section>
 		</motion.div>
 	);
