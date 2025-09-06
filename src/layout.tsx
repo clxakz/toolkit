@@ -1,18 +1,17 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useConfig } from "./hooks/useConfig";
 import { Loader, Wrench } from "lucide-react";
+import { Label } from "./components/ui/label";
+import { Switch } from "./components/ui/switch";
 
 const Options = lazy(() => import("./pages/options"));
 
 export default function Layout() {
-	const { config, setConfig } = useConfig();
+	const { config, setConfig, setOption } = useConfig();
 
 	useEffect(() => {
 		if (config) return;
-		window.ipcRenderer.invoke("get-config").then((config) => {
-			setConfig(config);
-			console.log(config);
-		});
+		window.ipcRenderer.invoke("get-config").then(setConfig);
 	}, []);
 
 	useEffect(() => {
@@ -31,6 +30,17 @@ export default function Layout() {
 					<h2 className="leading-none!">Toolkit</h2>
 					<p className="leading-none!">Set and forget</p>
 				</article>
+
+				<section className="flex items-center ml-auto gap-2">
+					<Label className="text-primary" htmlFor="launchAtStartup">
+						Launch at system startup
+					</Label>
+					<Switch
+						id="launchAtStartup"
+						checked={config?.launchOnStartup}
+						onCheckedChange={(checked) => setOption("launchOnStartup", checked)}
+					/>
+				</section>
 			</nav>
 
 			<main className="flex flex-1 p-2 overflow-auto">

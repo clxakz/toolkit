@@ -52,7 +52,7 @@ export const createWindow = (): void => {
 		},
 	});
 
-	if (VITE_DEV_SERVER_URL) {
+	if (VITE_DEV_SERVER_URL && isDev) {
 		win.loadURL(VITE_DEV_SERVER_URL);
 		win.webContents.openDevTools({ mode: "detach" });
 	} else {
@@ -80,11 +80,16 @@ app.whenReady().then(() => {
 const handleConfig = (): void => {
 	config = new Store({
 		defaults: {
-			launchOnStartup: false,
+			launchOnStartup: true,
 			firstStart: true,
 			startupActions: [""],
 			classicContextMenu: false,
 		},
+	});
+
+	app.setLoginItemSettings({
+		openAtLogin: config.store.launchOnStartup,
+		path: process.execPath,
 	});
 
 	config.onDidAnyChange((newval, oldval) => {

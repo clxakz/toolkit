@@ -30,7 +30,7 @@ export default function Options() {
 				<Option
 					Icon={MonitorCog}
 					label="Classic Context Menu"
-					description="Enables the classic windows 10 right click menu on windows 11."
+					description="Enables the classic windows 10 right click menu on windows 11 (restarts system shell)."
 					badges={["visual"]}
 				>
 					<Switch checked={config?.classicContextMenu} onCheckedChange={(checked) => setOption("classicContextMenu", checked)} />

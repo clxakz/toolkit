@@ -2,7 +2,7 @@
 	"name": "toolkit",
 	"author": "clxakz",
 	"description": "Toolkit — a utility app for windows",
-	"version": "1.3.0",
+	"version": "1.2.0",
 	"type": "module",
 	"license": "MIT",
 	"scripts": {
